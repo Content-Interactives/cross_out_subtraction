@@ -1,0 +1,9 @@
+@keyframes candy-pulse-scale {
+	0% { transform: rotate(15deg) scale(1); }
+	50% { transform: rotate(15deg) scale(1.3); }
+	100% { transform: rotate(15deg) scale(1); }
+}
+
+.candy-pulse {
+	animation: candy-pulse-scale 1000ms ease-in-out forwards;
+}
