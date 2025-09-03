@@ -1,6 +1,7 @@
 import React, { useId, useState, useMemo, useEffect, useRef } from 'react';
 import './Candies.css';
 
+
 const Candy = ({ crossed = false, onClick, baseColor, stripeColor, pulse = false }) => {
 	const leftClipId = useId();
 	const rightClipId = useId();

@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import confetti from 'canvas-confetti';
+import audio from './Cross Candy Audio.mp3';
 
 // UI Components Imports
 import { Container } from './ui/reused-ui/Container.jsx'
 import Candies from './Candies.jsx'
 
 // Assets Imports
-import Flexi_Faceplant from './assets/flexi_faceplant.png'
-import Flexi_Excited from './assets/flexi_excited.png'
 import Flexi_Hello from './assets/flexi_hello.png'
-import Flexi_Hey from './assets/flexi_hey.png'
 import Flexi_Stars from './assets/flexi_stars.png'
-import Flexi_ThumbsUp from './assets/flexi_thumbsup.png'
 import Flexi_Confused from './assets/flexi_confused.png'
 
 // UI Animation Imports
@@ -36,11 +33,13 @@ const CrossOutSubtraction = () => {
         const [roundId, setRoundId] = useState(0);
         const resetTimeoutRef = useRef(null);
         const [winPulseId, setWinPulseId] = useState(0);
+        const audioRef = useRef(new Audio(audio));
 
         // Functions
         const handleCandyDelta = (delta) => {
                 setCandiesLeft((prev) => prev + delta);
         };
+
         const randomizeRound = () => {
                 const newCandies = Math.floor(Math.random() * 7) + 6; // 6-12
                 const newToKeep = Math.floor(Math.random() * (newCandies - 1)) + 1; // 1..newCandies-1
@@ -51,6 +50,7 @@ const CrossOutSubtraction = () => {
                 setIsCorrect(false);
                 setRoundId((id) => id + 1);
         };
+
         const handleCheckAnswer = () => {
                 const expected = candies - candiesToKeep;
                 if (candiesLeft === expected) {
@@ -67,6 +67,7 @@ const CrossOutSubtraction = () => {
                         setIsCorrect(false);
                 }
         };
+
         const handleCountButtonClick = () => {
                 if (isCorrect) return;
                 handleCheckAnswer();
@@ -78,6 +79,11 @@ const CrossOutSubtraction = () => {
                 };
         }, []);
 
+        const handleSoundClick = () => {
+                audioRef.current.currentTime = 0; // Reset to beginning
+                audioRef.current.play()
+        };
+
         // Render
         return (
                 <Container 
@@ -85,14 +91,14 @@ const CrossOutSubtraction = () => {
                         showResetButton={false}
                         borderColor="#FF7B00"
                         showSoundButton={true}
-                        onSound={null}
+                        onSound={handleSoundClick}
                 >       
                 <div className='h-[100%] flex flex-col items-center space-between'>
                         <div className='text-center text-sm text-gray-500 p-5'>
                                 Flexi wants to share some candy with you! Cross out the candies he wants to keep to see how many he can give you!
                         </div>
 
-                        <div className='w-[93%] h-[72%] flex flex-col items-center justify-between'>
+                        <div className='w-[93%] h-[72%] flex flex-col items-center'>
                                 <div className='relative top-[15%] translate-y-[-15%] flex flex-col items-center gap-4'>
                                         <Candies key={roundId} number={candies} onToggleDelta={handleCandyDelta} pulseTrigger={winPulseId} />
                                         <button type='button' className={`text-xl md:text-2xl font-bold px-2 py-1 bg-green-100 text-green-700 border border-green-300 rounded-lg shadow-sm hover:bg-green-200 focus:outline-none focus:ring-2 focus:ring-green-400 active:scale-[0.98] transition ${isCorrect ? 'cursor-default' : 'cursor-pointer'}`} onClick={handleCountButtonClick}>
@@ -100,7 +106,7 @@ const CrossOutSubtraction = () => {
                                         </button>
                                 </div>
 
-                                <div className='relative bottom-[0%] w-[100%] ml-[-3%] flex flex-row items-center gap-3'>
+                                <div className='absolute bottom-[5%] w-[100%] ml-[-3%] flex flex-row items-center gap-3'>
                                         <img 
                                                 src={flexiImage} 
                                                 alt="Flexi Confused" 
